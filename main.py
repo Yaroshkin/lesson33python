@@ -1,29 +1,38 @@
 #!/usr/bin/env python
+#UTF-8
+import json
+
+import requests
 import telebot
+from TOKEN import TOKEN
 
-TOKEN = ""
 bot = telebot.TeleBot(TOKEN)
+file = open('newlist', 'r', encoding='utf-8')
+lines = file.readlines()
+data = [line.rstrip('\n') for line in lines]
+file.close()
+
+
+@bot.message_handler(commands=['start'])
+def send_message(message):
+    keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
+    keyboard.row("Hello")
+    bot.send_message(message.chat.id, text="Привет, {0.first_name}\nДавай сыграем в города".format(message.from_user),reply_markup=keyboard)
 
 
 
-@bot.message_handler(commands=['help', 'start'])
-def send_welcome(message):
-    bot.reply_to(message, "beep!")
-
-
-@bot.message_handler(func=lambda message: message.text=="keyboard")
+@bot.message_handler(content_types=['text'])
 def echo_message(message):
-    # bot.reply_to(message, message.text)
-    markup = telebot.types.ReplyKeyboardMarkup(row_width=2)
-    itembtn1 = telebot.types.KeyboardButton('a')
-    itembtn2 = telebot.types.KeyboardButton('v')
-    itembtn3 = telebot.types.KeyboardButton('d')
-    markup.add(itembtn1, itembtn2, itembtn3)
-    bot.send_message(message.chat.id, "Choose one letter:", reply_markup=markup)
+    if message.text in data:
+        data.remove(message.text)
 
-@bot.message_handler(func=lambda message: True)
-def echo_message(message):
-    bot.reply_to(message, message.text)
-
+        for i in data:
+            if str(message.text[-1]) == str(i[0]):
+                bot.send_message(message.chat.id,i)
+                print(i)
+                data.remove(i)
+                break
+    else:
+        bot.send_message(message.chat.id, "Это слово уже было")
 
 bot.infinity_polling()
