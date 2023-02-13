@@ -1,24 +1,18 @@
 #!/usr/bin/env python
 #UTF-8
 import json
-
+import os
 import requests
 import telebot
-from TOKEN import TOKEN
 
-bot = telebot.TeleBot(TOKEN)
-# file = open('newlist', 'r', encoding='utf-8')
-# lines = file.readlines()
-# data = [line.rstrip('\n') for line in lines]
-# file.close()
+
+bot = telebot.TeleBot(os.getenv("TOKEN"))
 with open("out.json", 'r', encoding='utf-8') as f:
     data = json.load(f)
 
 @bot.message_handler(commands=['start'])
 def send_message(message):
-    keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.row("Hello")
-    bot.send_message(message.chat.id, text="Привет, {0.first_name}\nДавай сыграем в города".format(message.from_user),reply_markup=keyboard)
+    bot.send_message(message.chat.id, text="Привет, {0.first_name}\nДавай сыграем в города\n Вводите название города англ.буквами".format(message.from_user))
 
 
 
