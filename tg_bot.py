@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 #UTF-8
 import json
-import os
 import requests
 import telebot
 
-
-bot = telebot.TeleBot(os.getenv("TOKEN"))
+TOKEN = '6106215509:AAHeZyeDPU9uBucTEH6I1OfFG8ymAuuR4QE'
+bot = telebot.TeleBot(TOKEN)
 with open("out.json", 'r', encoding='utf-8') as f:
     data = json.load(f)
 
